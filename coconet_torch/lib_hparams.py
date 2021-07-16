@@ -25,10 +25,10 @@ class Hyperparameters(object):
         qpm=60,
         corrupt_ratio=0.25,
         # Input dimensions.
-        batch_size=20,
+        batch_size=1,
         min_pitch=36,
         max_pitch=81,
-        crop_piece_len=64,
+        crop_piece_len=128,
         num_instruments=4,
         separate_instruments=True,
         # Batch norm parameters.
@@ -147,7 +147,7 @@ class Hyperparameters(object):
 
     @property
     def log_subdir_str(self):
-        return '%s_%s' % (self.get_conv_arch().name, self.__str__())
+        return '%s_%s' % (self.get_convnet_arch().name, self.__str__())
 
     @property
     def name(self):
@@ -156,7 +156,7 @@ class Hyperparameters(object):
     @property
     def pianoroll_shape(self):
         if self.separate_instruments:
-            return [self.crop_piece_len, self.num_pitches, self.num_instruments]
+            return [self.num_instruments, self.crop_piece_len, self.num_pitches]
         else:
             return [self.crop_piece_len, self.num_pitches, 1]
 
@@ -166,7 +166,7 @@ class Hyperparameters(object):
                                             self.num_instruments == 0):
             return False
         else:
-            return True
+            return False
 
     def __str__(self):
         """Get all hyperparameters as a string."""
@@ -237,9 +237,9 @@ class Straight(Architecture):
     _add(filters=[3, 3, input_depth, num_filters])
     for _ in range(num_layers - 3):
       _add(filters=[3, 3, num_filters, num_filters])
-    _add(filters=[2, 2, num_filters, num_filters])
+    _add(filters=[3, 3, num_filters, num_filters])
     _add(
-        filters=[2, 2, num_filters, output_depth], activation=lib_util.identity)
+        filters=[3, 3, num_filters, output_depth], activation=lib_util.identity)
 
     self.name = '%s-%d-%d' % (self.key, len(self.layers), num_filters)
 

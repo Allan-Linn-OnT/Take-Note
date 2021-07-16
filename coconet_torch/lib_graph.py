@@ -3,6 +3,7 @@ import numpy as np
 import torch.nn as nn
 import torch.nn.functional as F
 import collections
+import math
 
 import lib_hparams
 
@@ -20,8 +21,15 @@ class CoconetGraph(nn.Module):
         self._direct_inputs = direct_inputs
         self._use_placeholders = use_placeholders
         self.hiddens = []
+        self.layers = []
         self.popstats_by_batchstat = collections.OrderedDict()
         self.build()
+
+    def forward(self, x):
+        for i, layer in enumerate(self.layers):
+            print(f'Iteration: {i+1}, shape: {x.shape}')
+            x = layer(x)
+        return x     
 
     @property
     def use_placeholders(self):
@@ -62,17 +70,33 @@ class CoconetGraph(nn.Module):
 
     def build(self):
         '''Builds the graph.'''
+        torch.manual_seed(0)
         featuremaps = self.get_convnet_input()
         self.residual_init()
 
         conv_arch = self.hparams.get_convnet_arch()
         layers = conv_arch.layers
+        self.hiddens = layers
 
-        n = len(layers)
         torch_layers = []
         for i, layer in enumerate(layers):
-            print(layer)
-
+            key = 'filters'
+            kernel, _, in_channels, out_channels = layer[key]
+            # if 'activation' in layer:
+            #     print(layer['activation'])
+            hpad = self.get_same_padding(self.hparams.crop_piece_len, kernel, 1, 1)
+            wpad = self.get_same_padding(self.hparams.num_pitches, kernel, 1, 1)
+            conv2d = torch.nn.Conv2d(in_channels, out_channels, kernel, padding=(hpad, wpad))
+            relu = torch.nn.ReLU()
+            torch_layers.append(conv2d)
+            torch_layers.append(relu)
+        self.layers = torch.nn.ModuleList(torch_layers)
+    
+    def get_same_padding(self, i, k, s, d):
+        o = i
+        output = (s*(o-1)-i+k+(k-1)*(d-1))/2
+        return int(math.ceil(output))
+    
     def get_convnet_input(self):
         """Returns concatenates masked out pianorolls with their masks."""
         # pianorolls, masks = self.inputs['pianorolls'], self.inputs[
@@ -107,10 +131,10 @@ class CoconetGraph(nn.Module):
 def get_placeholders(hparams):
     return dict(
         pianorolls=torch.rand(
-            [2, hparams.batch_size, hparams.num_pitches, hparams.num_instruments]),
+            [hparams.batch_size, *hparams.pianoroll_shape]),
         masks=torch.rand(
-            [2, hparams.batch_size, hparams.num_pitches, hparams.num_instruments]),
-        lengths = torch.rand([64]))
+            [hparams.batch_size, *hparams.pianoroll_shape]),
+        lengths = torch.rand([hparams.crop_piece_len]))
 
 def build_graph(is_training,
                 hparams, 
@@ -131,3 +155,5 @@ def build_graph(is_training,
 if __name__ == '__main__':
     hparams = lib_hparams.Hyperparameters(**{'max_pitch': 81, 'min_pitch': 36, 'num_instruments': 4})
     graph = build_graph(is_training=True, hparams=hparams)
+    output = graph(graph.placeholders['pianorolls'])
+    print(output.max())
