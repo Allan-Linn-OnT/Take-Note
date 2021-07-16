@@ -57,7 +57,7 @@ parser.add_argument('--dilate_time_only', default=False,
 parser.add_argument('--repeat_last_dilation_level', default=False,
                     help='If set, repeats the last dilation rate')
 # Higher level arch params
-parser.add_argument('--num_layers', default=16,
+parser.add_argument('--num_layers', default=8,
                     help='The number of convolutional layers for architecture that do not use dilated convs')
 parser.add_argument('--num_filters', default=128,
                     help='The number of filters for each convolutional layer.')
@@ -246,7 +246,6 @@ def main(unused_argv, FLAGS):
 
     epoch_count = 0
     while epoch_count < FLAGS.num_epochs or not FLAGS.num_epochs:
-
         # Run training.
         # run_epoch(sv, sess, m, train_data, hparams, m.train_op, 'train',
         #             epoch_count)
@@ -296,7 +295,6 @@ def main(unused_argv, FLAGS):
             loss.backward()
             optim.step()
 
-
         # Run validation.
         # sv = 0
         # sess = 0
@@ -307,6 +305,12 @@ def main(unused_argv, FLAGS):
         #     # tracker(loss, sess)
         #     # if tracker.should_stop():
         #     #     break
+
+        if not os.path.isdir(os.path.join(os.getcwd(), 'checkpoints')):
+            print('MAKING DIR')
+            os.mkdir(os.path.join(os.getcwd(), 'checkpoints'))
+        save_path = os.path.join(os.getcwd(), 'checkpoints', 'coconet_ep{}'.format(epoch_count))
+        torch.save(m.state_dict(), save_path)
 
         epoch_count += 1
 
