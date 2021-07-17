@@ -29,6 +29,8 @@ class CoconetGraph(nn.Module):
         for i, layer in enumerate(self.layers):
             print(f'Iteration: {i+1}, shape: {x.shape}')
             x = layer(x)
+            if self.hparams.batch_norm:
+                x = torch.nn.BatchNorm2d(x.shape[1])(x)
         return x     
 
     @property
@@ -86,7 +88,10 @@ class CoconetGraph(nn.Module):
             #     print(layer['activation'])
             hpad = self.get_same_padding(self.hparams.crop_piece_len, kernel, 1, 1)
             wpad = self.get_same_padding(self.hparams.num_pitches, kernel, 1, 1)
-            conv2d = torch.nn.Conv2d(in_channels, out_channels, kernel, padding=(hpad, wpad))
+            bias = True
+            if self.hparams.batch_norm:
+                bias = False
+            conv2d = torch.nn.Conv2d(in_channels, out_channels, kernel, bias=bias,padding=(hpad, wpad))
             relu = torch.nn.ReLU()
             torch_layers.append(conv2d)
             torch_layers.append(relu)

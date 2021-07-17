@@ -262,11 +262,27 @@ def main(unused_argv, FLAGS):
         losses_unmask = lib_util.AggregateMean('losses_unmask')
 
         optim = torch.optim.Adam(m.parameters(), hparams.learning_rate)
-        compute_predictions = torch.nn.Sigmoid()
-        cross_entropy = torch.nn.MultiLabelSoftMarginLoss()
-        if hparams.use_softmax_loss:
-            compute_predictions = torch.nn.Softmax(dim=2)
-            cross_entropy = torch.nn.LogSoftmax(dim=2)
+
+        def compute_predictions(logits):
+            if hparams.use_softmax_loss:
+                return torch.nn.Softmax(dim=2)(logits)
+            else:
+                return torch.nn.Sigmoid()(logits)
+
+        def compute_cross_entropy(logits, labels):
+            if hparams.use_softmax_loss:
+                # return -torch.sparse.log_softmax()(logits, dim=2) * labels
+                return torch.nn.MSELoss(logits, labels)
+            else:
+                return torch.nn.MultiLabelSoftMarginLoss()(logits, labels)
+
+        def compute_loss(unreduced_loss, pianorolls, masks, lengths):
+            batch_duration = pianorolls.shape[3]
+            indices = torch.arange(0, batch_duration)
+            mask = indices * masks
+            unmask = indices * (1. - masks)
+            print(mask, unmask)
+            return indices
 
         start_time = time.time()
         for iteration, batch in enumerate(batches):
@@ -276,9 +292,11 @@ def main(unused_argv, FLAGS):
             for key, value in feed_dict.items():
                 placeholder, features = value
                 if key == 'masks':
-                    masks = torch.from_numpy(features).double()
+                    masks = torch.from_numpy(features)
                 elif key == 'pianorolls':
-                    pianorolls = torch.from_numpy(features).double()
+                    pianorolls = torch.from_numpy(features)
+                elif key == 'lengths':
+                    lengths = torch.from_numpy(features)
                 i += 1
             convnet_input = get_convnet_input(pianorolls, masks, hparams)
             # Convert to channels first format
@@ -286,9 +304,10 @@ def main(unused_argv, FLAGS):
             pianorolls = pianorolls.permute(0,3,2,1)
             print('Batch #{}'.format(iteration), convnet_input.shape)
 
-            prediction = compute_predictions(m(convnet_input))
-            print(prediction[0].max(), pianorolls[0].max())
-            loss = cross_entropy(prediction, pianorolls)
+            logits = m(convnet_input)
+            predictions = compute_predictions(logits)
+            loss = compute_cross_entropy(logits=predictions, labels=pianorolls)
+            print(loss)
             if loss < loss_best:
                 loss_best = loss
             print('Loss: {:.2f}'.format(loss))
