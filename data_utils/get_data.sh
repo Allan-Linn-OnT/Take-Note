@@ -32,6 +32,6 @@ do
             xxd -p $midi | sed 's/\(ff5405.\{8\}\)../\100/' | xxd -r -p > $( dirname $midi )/temp # sed magic
             mv $( dirname $midi )/temp $midi
             rm -f $( dirname $midi )/temp
-
+            python clip_midi.py -f $midi
         done
 done
