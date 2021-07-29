@@ -9,6 +9,7 @@ from tqdm import tqdm
 
 ped = PianorollEncoderDecoder(input_size=121)
 QUANT = 4
+NUM_SECS = 15
 
 def mid_file_to_pr_input_target(mid_file_path, quant=4, num_secs=0):
     '''
@@ -72,7 +73,7 @@ def mid_file_to_input_target(midi_file):
     Use this for inference or when you only need model input
     '''
 
-    in_pr, tar_pr = mid_file_to_pr_input_target(midi_file, quant=QUANT)
+    in_pr, tar_pr = mid_file_to_pr_input_target(midi_file, quant=QUANT, num_secs=NUM_SECS)
     input_mask = np.zeros((ped.input_size, in_pr.num_steps))
     target_mask = np.zeros((ped.input_size, tar_pr.num_steps))
     for step in in_pr.steps:

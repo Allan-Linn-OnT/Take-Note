@@ -12,18 +12,18 @@ def get_dataloader_sep_folder(data_dir: str,
                               batch_size: int = 4,
                               data_transforms = [transforms.ToTensor()]
                               ):
-    """ Create Train and Test dataloaders from two
-        separate Train and Test folders.
+    """ Create train and valid dataloaders from two
+        separate train and valid folders.
         The directory structure should be as follows.
         data_dir
-        --Train - N.B Also includes validation data
+        --train - N.B Also includes validation data
         ------Image
         ---------Image1
         ---------ImageN
         ------Mask
         ---------Mask1
         ---------MaskN
-        --Test
+        --valid
         ------Image
         ---------Image1
         ---------ImageM
@@ -39,7 +39,7 @@ def get_dataloader_sep_folder(data_dir: str,
 
     Returns:
         dataloaders: Returns dataloaders dictionary containing the
-        Train and Test dataloaders.
+        train and valid dataloaders.
     """
     composed_transforms = transforms.Compose(data_transforms)
 
@@ -48,14 +48,14 @@ def get_dataloader_sep_folder(data_dir: str,
                                transforms=composed_transforms,
                                image_folder=image_folder,
                                mask_folder=mask_folder)
-        for x in ['Train', 'Test']
+        for x in ['train_image', 'valid_image']
     }
     dataloaders = {
         x: DataLoader(image_datasets[x],
                       batch_size=batch_size,
                       shuffle=True,
                       num_workers=1)
-        for x in ['Train', 'Test']
+        for x in ['train_image', 'valid_image']
     }
     return dataloaders
 
@@ -66,19 +66,19 @@ def get_dataloader_single_folder(data_dir: str,
                                  fraction: float = 0.2,
                                  batch_size: int = 4,
                                  data_transforms = [transforms.ToTensor()]):
-    """Create train and test dataloader from a single directory containing
+    """Create train and valid dataloader from a single directory containing
     the image and mask folders.
 
     Args:
         data_dir (str): Data directory path or root
         image_folder (str, optional): Image folder name. Defaults to 'Images'.
         mask_folder (str, optional): Mask folder name. Defaults to 'Masks'.
-        fraction (float, optional): Fraction of Test set. Defaults to 0.2.
+        fraction (float, optional): Fraction of valid set. Defaults to 0.2.
         batch_size (int, optional): Dataloader batch size. Defaults to 4.
 
     Returns:
         dataloaders: Returns dataloaders dictionary containing the
-        Train and Test dataloaders.
+        train and valid dataloaders.
     """
     composed_transforms = transforms.Compose(data_transforms)
 
@@ -90,13 +90,13 @@ def get_dataloader_single_folder(data_dir: str,
                                fraction=fraction,
                                subset=x,
                                transforms=composed_transforms)
-        for x in ['Train', 'Test']
+        for x in ['train', 'valid']
     }
     dataloaders = {
         x: DataLoader(image_datasets[x],
                       batch_size=batch_size,
                       shuffle=True,
                       num_workers=1)
-        for x in ['Train', 'Test']
+        for x in ['train', 'valid']
     }
     return dataloaders

@@ -16,10 +16,10 @@ def train_model(model, criterion, dataloaders, optimizer, metrics, bpath,
     # Use gpu if available
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model.to(device)
-    # Initialize the log file for training and testing loss and metrics
-    fieldnames = ['Epoch', 'Train_loss', 'Test_loss'] + \
-        [f'Train_{m}' for m in metrics.keys()] + \
-        [f'Test_{m}' for m in metrics.keys()]
+    # Initialize the log file for training and validing loss and metrics
+    fieldnames = ['epoch', 'train_image_loss', 'valid_image_loss'] + \
+        [f'train_image_{m}' for m in metrics.keys()] + \
+        [f'valid_image_{m}' for m in metrics.keys()]
     with open(os.path.join(bpath, 'log.csv'), 'w', newline='') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
@@ -31,8 +31,8 @@ def train_model(model, criterion, dataloaders, optimizer, metrics, bpath,
         # Initialize batch summary
         batchsummary = {a: [0] for a in fieldnames}
 
-        for phase in ['Train', 'Test']:
-            if phase == 'Train':
+        for phase in ['train_image', 'valid_image']:
+            if phase == 'train_image':
                 model.train()  # Set model to training mode
             else:
                 model.eval()  # Set model to evaluate mode
@@ -45,10 +45,10 @@ def train_model(model, criterion, dataloaders, optimizer, metrics, bpath,
                 optimizer.zero_grad()
 
                 # track history if only in train
-                with torch.set_grad_enabled(phase == 'Train'):
+                with torch.set_grad_enabled(phase == 'train_image'):
                     outputs = model(inputs)
-                    loss = criterion(outputs['out'], masks)
-                    y_pred = outputs['out'].data.cpu().numpy().ravel()
+                    loss = criterion(outputs, masks)
+                    y_pred = outputs.data.cpu().numpy().ravel()
                     y_true = masks.data.cpu().numpy().ravel()
                     for name, metric in metrics.items():
                         if name == 'f1_score':
@@ -60,7 +60,7 @@ def train_model(model, criterion, dataloaders, optimizer, metrics, bpath,
                                 metric(y_true.astype('uint8'), y_pred))
 
                     # backward + optimize only if in training phase
-                    if phase == 'Train':
+                    if phase == 'train_image':
                         loss.backward()
                         optimizer.step()
             batchsummary['epoch'] = epoch
@@ -74,7 +74,7 @@ def train_model(model, criterion, dataloaders, optimizer, metrics, bpath,
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writerow(batchsummary)
             # deep copy the model
-            if phase == 'Test' and loss < best_loss:
+            if phase == 'valid_image' and loss < best_loss:
                 best_loss = loss
                 best_model_wts = copy.deepcopy(model.state_dict())
 

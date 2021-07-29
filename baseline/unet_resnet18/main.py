@@ -4,6 +4,7 @@ import click
 import torch
 from sklearn.metrics import f1_score, roc_auc_score
 from torch.utils import data
+from torchvision import transforms
 
 import datahandler
 from model import createUnet
@@ -43,14 +44,20 @@ def main(data_directory, exp_directory, epochs, batch_size):
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
 
     # Specify the evaluation metrics
-    metrics = {'f1_score': f1_score, 'auroc': roc_auc_score}
+    metrics = {'f1_score': f1_score, }#'auroc': roc_auc_score}
 
     # Create the dataloader
-    dataloaders = datahandler.get_dataloader_single_folder(
+    dataloaders = datahandler.get_dataloader_sep_folder(
         data_directory,
-        image_folder='train_input',
-        mask_folder='train_target',
-        batch_size=batch_size)
+        image_folder='input',
+        mask_folder='target',
+        batch_size=batch_size,
+        data_transforms=[
+            transforms.Grayscale(),
+            transforms.ToTensor(),
+            transforms.Resize(size=(512,512)),
+            ]
+        )
     _ = train_model(model,
                     criterion,
                     dataloaders,
