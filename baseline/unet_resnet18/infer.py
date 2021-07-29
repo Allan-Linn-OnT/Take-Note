@@ -24,9 +24,9 @@ model.to('cpu')
 model.requires_grad = False
 
 #img = Image.open('/home/martin/Desktop/RobVol2.5/APS360/Project/TakeNote/data/JSB Chorales/valid_image/input/136.png').convert("RGB")
-img = Image.open('/home/martin/Desktop/RobVol2.5/APS360/Project/TakeNote/data/Nottingham/test_image/input/xmas_simple_chords_11.png').convert("RGB")
+img = Image.open('/home/martin/Desktop/RobVol2.5/APS360/Project/TakeNote/data/Nottingham/test_image/input/ashover_simple_chords_11.png').convert("RGB")
 
-# img = Image.open('_swag.png').convert("RGB")
+#img = Image.open('_swag.png').convert("RGB")
 nimg = np.asarray(img)[..., 0] # only first channel is needed
 h, w = nimg.shape
 print(nimg.shape)
