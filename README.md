@@ -11,7 +11,8 @@ The final models are exported to [ONNX](https://github.com/onnx/onnx) format suc
 
 # Instructions
 <ol>
-<li>Clone the original Coconet [GitHub](https://github.com/magenta/magenta/tree/main/magenta/models/coconet)</li>
+<li>Clone the original Coconet 
+<a href="https://github.com/magenta/magenta/tree/main/magenta/models/coconet">GitHub</a></li>
 
 <li>Clone this repo into the root directory of the previous GitHub.</li>
 
