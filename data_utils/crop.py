@@ -77,34 +77,5 @@ def crop_image(img, desired_height = 121, desired_width = 480):
     return crop_img
 
 if __name__ == "__main__":
-    '''
-    cwd = os.getcwd()
-    u = cwd + '/382.png'
-    uu = cv2.imread(u, 0)
-    new_c = crop_image(uu)
-    cv2.imwrite(cwd + "/test/test_img.png", new_c)
-    '''
-    cwd = os.getcwd()
-    inn = cwd + '/10_test_out2'
-    im = inn + '/input/bengoel_2.png'
-    img = cv2.imread(im)
-    grayimg = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-    cp = crop_image(grayimg, desired_width= 68)
-    cv2.imwrite(inn + '/target/bengoel_2.png', cp)
-
-
-
-    '''
-    dim_width = []
-    #crop_data()
-    for i in os.listdir(inn + '/input'):
-        if i.endswith(".png"):
-            im = inn + '/input/' + i
-            print(im)
-            img = cv2.imread(im)
-            grayimg = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-            cp = crop_image(grayimg, desired_width= 128)
-            cv2.imwrite(inn + '/target/' + i, cp)
-        else:
-            continue
-    '''
+    crop_data()
+ 
