@@ -10,8 +10,10 @@ Some of the files from the original Coconet GitHub were reused as they deal with
 The final models are exported to [ONNX](https://github.com/onnx/onnx) format such that they can be loaded into the sampling / inference code from the Coconet GitHub.
 
 # Instructions
-Clone the original Coconet [GitHub](https://github.com/magenta/magenta/tree/main/magenta/models/coconet)
+<ol>
+<li>Clone the original Coconet [GitHub](https://github.com/magenta/magenta/tree/main/magenta/models/coconet)</li>
 
-Clone this repo into the root directory of the previous GitHub.
+<li>Clone this repo into the root directory of the previous GitHub.</li>
 
-Use the sample_bazel.sh and train_bazel.sh scripts to call the coconet_train.py function from this repo.
+<li>Use the sample_bazel.sh and train_bazel.sh scripts to call the coconet_train.py function from this repo.</li>
+</ol>
