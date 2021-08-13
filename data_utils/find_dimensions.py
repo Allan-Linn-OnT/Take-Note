@@ -90,32 +90,6 @@ def largest_image_dimensions(data_directory,input_folder,mask_folder):
     print('\n')
     print(max_width == max_width2)
 
-    '''
-    max_input_height = max(max_height) 
-    max_input_width = max(max_width)
-
-    max_mask_height = max(max_height2)
-    max_mask_width = max(max_width2)
-
-    print("Max Input height:", max_input_height)
-    print("Max Input width:", max_input_width)
-    print("Max Mask height:", max_mask_height)
-    print("Max Mask width:", max_mask_width)
-    '''
-    '''
-    max_height.sort(reverse=True)
-    max_width.sort(reverse=True)
-    max_height2.sort(reverse = True)
-    max_width2.sort(reverse=True)
-
-    print(max_height[:])
-    print(max_width[:])
-    print(max_height2[:])
-    print(max_width2[:])
-
-    print(min(max_height))
-    print(min(max_width))
-    '''
 
     print(max_height[:])
     print(max_width[:])
