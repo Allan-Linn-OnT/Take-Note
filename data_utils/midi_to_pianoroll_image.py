@@ -15,7 +15,6 @@ CROP = 0
 def mid_file_to_pr_input_target(mid_file_path, quant=4, num_secs=0):
     '''
     converts a file path to a ns.Melody() object, need to specify the number of counts given to a quarter note for note_sequence quantization
-
     Args:
         - mid_file_path - str, path to the mid file, can be absolute or relative
         - quant - number of steps a quarter note represents, this is required for quantization, bigger number means more data but better note accuracy
@@ -133,7 +132,6 @@ def image2midi(image_path, out_dir, mods=['converted']):
 def midi2image(midi_path, out_dir, mods=['input', 'target']):
     '''
     create input and target masks as images
-
     input and taget folders will be created in the output dir
     '''
 
@@ -203,3 +201,4 @@ if __name__ == "__main__":
                 midi2image(midi_file, out_dir=out)
             except:
                 print(f"{midi_file} FAILED TO CONVERT!")
+
