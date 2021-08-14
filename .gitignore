@@ -3,3 +3,7 @@ data
 *.log
 env
 .vscode
+*.log
+__pycache__/
+out
+
