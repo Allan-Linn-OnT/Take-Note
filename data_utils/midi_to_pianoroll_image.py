@@ -9,7 +9,8 @@ from tqdm import tqdm
 
 ped = PianorollEncoderDecoder(input_size=121)
 QUANT = 4
-NUM_SECS = 15
+NUM_SECS = 0
+CROP = 0
 
 def mid_file_to_pr_input_target(mid_file_path, quant=4, num_secs=0):
     '''
@@ -95,6 +96,7 @@ def mid_file_to_arr(midi_file):
     return mask
 
 def arr_to_image(arr, out_path):
+    arr = arr # Note we crop the song to be 300 pixels in width
     Image.fromarray(255*arr).convert("RGB").save(out_path)
 
 def image_to_class_indices(image_path):
@@ -171,8 +173,8 @@ if __name__ == "__main__":
 
     if single_encode is not None:
         inp, tar = mid_file_to_input_target(single_encode)
-        arr_to_image(inp, 'debug_inp.png')
-        arr_to_image(tar, 'debug_tar.png')
+        arr_to_image(inp, '{out}_inp.png')
+        arr_to_image(tar, '{out}_tar.png')
         exit(0)
 
     if single_decode is not None:
@@ -196,7 +198,7 @@ if __name__ == "__main__":
         os.makedirs(out + '/input', exist_ok=True)
         os.makedirs(out + '/target', exist_ok=True)
 
-        for midi_file in tqdm(glob.glob(os.path.join(midi_path,"*.mid"))):
+        for midi_file in tqdm(glob.glob(os.path.join(midi_path,"*.mid*"))):
             try:
                 midi2image(midi_file, out_dir=out)
             except:
