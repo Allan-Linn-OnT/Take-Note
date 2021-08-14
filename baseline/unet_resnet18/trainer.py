@@ -77,7 +77,7 @@ def train_model(model, criterion, dataloaders, optimizer, metrics, bpath,
             if phase == 'valid_image' and loss < best_loss:
                 best_loss = loss
                 best_model_wts = copy.deepcopy(model.state_dict())
-
+        torch.save(model, f'epoch_{epoch:03d}_weights.pt')
     time_elapsed = time.time() - since
     print('Training complete in {:.0f}m {:.0f}s'.format(
         time_elapsed // 60, time_elapsed % 60))

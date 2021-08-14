@@ -54,7 +54,7 @@ def get_dataloader_sep_folder(data_dir: str,
         x: DataLoader(image_datasets[x],
                       batch_size=batch_size,
                       shuffle=True,
-                      num_workers=1)
+                      num_workers=12)
         for x in ['train_image', 'valid_image']
     }
     return dataloaders

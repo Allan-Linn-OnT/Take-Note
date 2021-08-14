@@ -7,7 +7,7 @@ from torch.utils import data
 from torchvision import transforms
 
 import datahandler
-from model import createUnet
+from model import createUnet, createFPN
 from trainer import train_model
 
 
@@ -27,10 +27,14 @@ from trainer import train_model
               default=4,
               type=int,
               help="Specify the batch size for the dataloader.")
-def main(data_directory, exp_directory, epochs, batch_size):
-    # Create the deeplabv3 resnet101 model which is pretrained on a subset
-    # of COCO train2017, on the 20 categories that are present in the Pascal VOC dataset.
-    model = createUnet()
+@click.option("--arch",
+              default='Unet',
+              type=str,
+              help="Specify the Arch of the model")
+
+def main(data_directory, exp_directory, epochs, batch_size, arch):
+    
+    model = createUnet() if arch == 'Unet' else createFPN()
     model.train()
     data_directory = Path(data_directory)
     # Create the experiment directory if not present
@@ -67,7 +71,7 @@ def main(data_directory, exp_directory, epochs, batch_size):
                     num_epochs=epochs)
 
     # Save the trained model
-    torch.save(model, exp_directory / 'weights.pt')
+    torch.save(model, exp_directory / 'best_weights.pt')
 
 
 if __name__ == "__main__":
