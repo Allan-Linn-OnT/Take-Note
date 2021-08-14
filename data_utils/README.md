@@ -32,4 +32,10 @@ Data Folder Hierarchy:
 
 ```
 python3 pad_images_f.py --data_directory <data_folder_name> --input_folder <input_folder_name> --mask_folder <mask_folder_name>
+```
 
+# To Print Image Dimensions in Input Folder and Mask Folder
+```
+python3 find_dimensions.py --data_directory <data_folder_name> --input_folder <input_folder_name> --mask_folder <mask_folder_name>
+```
+```
