@@ -22,9 +22,9 @@ python midi_to_pianoroll_image.py -i path_to_folder -o output_folder
 
 # Standardize Image Dimensions by first cropping and then padding
 
-'''
+```
 python3 crop.py --data_directory <data_folder_name> --input_folder <input_folder_name> --mask_folder <mask_folder_name>
-'''
+```
 
 Data Folder Hierarchy:
 
@@ -32,5 +32,5 @@ Data Folder Hierarchy:
 -------------------<input_folder_name>
 -------------------<mask_folder_name>
 
-'''
+```
 
