@@ -28,7 +28,8 @@ python3 crop.py --data_directory <data_folder_name> --input_folder <input_folder
 
 Data Folder Hierarchy:
 
-<data_folder_name> contains <input_folder_name> and <mask_folder_name> 
+<data_folder_name>  contains  <input_folder_name>  and  <mask_folder_name> 
 
 ```
+python3 pad_images_f.py --data_directory <data_folder_name> --input_folder <input_folder_name> --mask_folder <mask_folder_name>
 
