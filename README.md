@@ -6,3 +6,5 @@ We utilize a number of ML models to assist with the music produciton process by 
 To run our code please refer to the README within the coconet_torch folder or the transformer folder.
 
 The Harmony generation provided by the baseline models are very poor and hence use of these models for music generation is discouraged.
+
+In general each folder of this project will have an accompanying README.md file. Please refer to them for further instruction on how to run code or what it may be used for.
