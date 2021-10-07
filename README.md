@@ -9,4 +9,4 @@ The Harmony generation provided by the baseline models are very poor and hence u
 
 In general each folder of this project will have an accompanying README.md file. Please refer to them for further instruction on how to run code or what it may be used for.
 
-Samples of Model Outputs in MP3 Format can be found here: https://drive.google.com/drive/folders/15BeQEygGRoVBk-z1KdAlpQQJ3tiCrc2V?usp=sharing
+Samples of Model Outputs in MP3 Format can be found here: https://drive.google.com/drive/folders/1yBW4_ZBdECed_BhA6oG1JavkJtQtdSzQ?usp=sharing
